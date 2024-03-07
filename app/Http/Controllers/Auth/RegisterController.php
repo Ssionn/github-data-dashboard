@@ -21,6 +21,7 @@ class RegisterController extends Controller
             'username' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'gitlab_token' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -28,6 +29,7 @@ class RegisterController extends Controller
             'username' => $request->username,
             'name' => $request->name,
             'email' => $request->email,
+            'gitlab_token' => Hash::make($request->gitlab_token),
             'password' => Hash::make($request->password),
         ]);
 

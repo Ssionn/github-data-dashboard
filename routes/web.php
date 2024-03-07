@@ -12,6 +12,8 @@ Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
 
 Route::middleware('auth')->group(function () {
+    Route::post('/execute-job', [ProjectController::class, 'executeJob'])->name('execute.job');
+
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 });
 
