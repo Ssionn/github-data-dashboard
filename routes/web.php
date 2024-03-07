@@ -1,7 +1,18 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::permanentRedirect('/', '/dashboard');
+
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 });
+
+Auth::routes();
