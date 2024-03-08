@@ -3,7 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Event;
 use App\Models\Project;
+use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,8 +24,10 @@ class User extends Authenticatable
         'username',
         'name',
         'email',
-        'gitlab_token',
         'password',
+        'github',
+        'github_id',
+        'github_token',
     ];
 
     /**
@@ -33,7 +37,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'gitlab_token',
         'remember_token',
     ];
 
@@ -47,12 +50,29 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'gitlab_token' => 'hashed',
         ];
     }
 
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    public static function generateUsername($username): string
+    {
+        if ($username === null) {
+            $username = Str::lower(Str::random($length = 8));
+        }
+
+        if (User::where('username', $username)->exists()) {
+            return User::generateUsername($username . Str::random(3));
+        }
+
+        return $username;
     }
 }

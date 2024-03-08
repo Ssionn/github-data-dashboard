@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,16 +16,16 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('name_with_namespace');
-            $table->string('path_with_namespace');
-            $table->string('default_branch');
-            $table->string('ssh_url_to_repo');
-            $table->string('http_url_to_repo');
-            $table->string('web_url');
-            $table->string('forks_count');
-            $table->string('star_count');
+            $table->string('full_name');
+            $table->string('description')->nullable();
+            $table->string('html_url');
+            $table->string('git_url');
+            $table->string('ssh_url');
+            $table->string('clone_url');
+            $table->string('owner');
             $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();
+            $table->dateTime('pushed_at')->nullable();
         });
     }
 

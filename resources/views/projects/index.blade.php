@@ -3,7 +3,7 @@
 @section('title', 'Projects')
 
 @section('content')
-    <div class="sm:ml-64">
+    <div class="sm:ml-64 sm:p-0 p-8">
         <div class="flex justify-between items-center mt-10">
             <h1 class="text-3xl font-bold text-white">Projects</h1>
             <form method="POST" action="{{ route('execute.job') }}">
@@ -24,7 +24,7 @@
 
                 </ul>
             @else
-                <p class="mt-6 text-gray-600 dark:text-gray-400">Please <a href="{{ route('login') }}"
+                <p class="text-gray-600 dark:text-gray-400">Please <a href="{{ route('login') }}"
                         class="text-blue-600 dark:text-blue-400">sign in</a> to view your projects.</p>
             @endauth
         </div>

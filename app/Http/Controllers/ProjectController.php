@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use App\Jobs\StoreAllProjectsInDatabase;
 
 class ProjectController extends Controller
@@ -12,17 +13,22 @@ class ProjectController extends Controller
         return view('projects.index');
     }
 
-    // public function executeJob()
-    // {
-    //     $user = User::find(auth()->id());
+    public function getRepositories()
+    {
+        $user = Auth::user();
 
-    //     $userId = $user->id;
-    //     $gitlabToken = $user->gitlab_token;
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'You need to be logged in');
+        }
 
-    //     dd($userId, $gitlabToken);
+        $githubToken = $user->github_token;
 
-    //     StoreAllProjectsInDatabase::dispatch($userId, $gitlabToken);
+        if (!$githubToken) {
+            return redirect()->route('login')->with('error', 'You need to connect your GitHub account first');
+        }
 
-    //     return redirect()->route('projects')->with('success', 'Syncing');
-    // }
+        StoreAllProjectsInDatabase::dispatch($githubToken, $user->id);
+
+        return redirect()->route('projects');
+    }
 }

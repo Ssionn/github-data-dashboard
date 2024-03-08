@@ -2,47 +2,61 @@
 
 namespace App\Jobs;
 
+use App\Models\Event;
 use App\Models\Project;
-use App\Services\GitlabService;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
+use App\Services\GithubService;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Auth;
 
 class StoreAllProjectsInDatabase implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct(
-        public int $userId,
-        public string $gitlabToken,
-    ) {
-        //
+    public string $token;
+
+    public function __construct(string $githubToken)
+    {
+        $this->token = $githubToken;
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle($userId, $gitlabToken): void
+    public function handle(): void
     {
-        $projectsData = GitlabService::apiCall($gitlabToken);
+        $userId = Auth::id();
+        $githubToken = $this->token;
 
-        foreach ($projectsData as $project) {
+        $repoData = GithubService::getRepositoriesFromGithub($githubToken);
+        $eventData = GithubService::getEventsFromGithub($githubToken);
+
+        foreach ($repoData as $project) {
             Project::create([
-                'name' => $project->name,
-                'name_with_namespace' => $project->name_with_namespace,
-                'path_with_namespace' => $project->path_with_namespace,
-                'default_branch' => $project->default_branch,
-                'ssh_url_to_repo' => $project->ssh_url_to_repo,
-                'http_url_to_repo' => $project->http_url_to_repo,
-                'web_url' => $project->web_url,
-                'forks_count' => $project->forks_count,
-                'star_count' => $project->star_count,
+                'name' => $project['name'],
+                'full_name' => $project['full_name'],
+                'description' => $project['description'],
+                'html_url' => $project['html_url'],
+                'git_url' => $project['git_url'],
+                'ssh_url' => $project['ssh_url'],
+                'clone_url' => $project['clone_url'],
+                'owner' => $project['owner']['login'],
+                'user_id' => $userId,
+            ]);
+        }
+
+        foreach ($eventData as $event) {
+            Event::create([
+                'type' => $event['type'],
+                'repo_id' => $event['repo']['id'],
+                'repo_name' => $event['repo']['name'],
+                'repo_url' => $event['repo']['url'],
+                'before_sha' => $event['before_sha'],
+                'commit_sha' => $event['commits']['sha'],
+                'commit_author' => $event['commits']['author']['name'],
+                'commit_message' => $event['commits']['message'],
+                'commit_url' => $event['commits']['url'],
                 'user_id' => $userId,
             ]);
         }
