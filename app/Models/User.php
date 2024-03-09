@@ -28,6 +28,7 @@ class User extends Authenticatable
         'github',
         'github_id',
         'github_token',
+        'image',
     ];
 
     /**
@@ -74,5 +75,14 @@ class User extends Authenticatable
         }
 
         return $username;
+    }
+
+    public function getImageUrl(): string
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
     }
 }

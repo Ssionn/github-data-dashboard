@@ -14,7 +14,9 @@ Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
 
 Route::middleware('auth')->group(function () {
     Route::post('/execute-job', [ProjectController::class, 'getRepositories'])->name('execute.job');
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/profile/{username}', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/profile/{username}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile/{username}/edit/updated', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::get('/auth/{github}/redirect', [OAuthController::class, 'redirect']);

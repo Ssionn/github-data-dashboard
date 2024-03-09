@@ -5,24 +5,27 @@
 @section('content')
     <div class="sm:ml-64 sm:p-0 p-8">
         <h1 class="text-3xl font-bold text-white mt-10">Profile</h1>
-        <div class="mt-10 flex flex-col md:flex-row">
-            <div class="flex flex-col">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQearoVADR6cVELwQsaVllGnWEvnbQ1Q_vXi_o2B1_-8A&s" alt="Profile Image" class="w-64 h-64 bg-white rounded-xl">
-                <button class="bg-white text-gray-800 px-4 py-2 rounded-md mt-4 w-64">Change Profile Picture</button>
+        <div class="mt-10 flex flex-col md:flex-row space-y-16 sm:space-y-0">
+            <div class="flex flex-col w-64 h-64">
+                <img src="{{ Auth::user()->getImageUrl() }}" alt="Profile Image" class="object-contain w-full h-full bg-black rounded-xl">
+                <a href="{{ route('profile.edit', Auth::user()->username) }}" class="bg-white text-gray-800 px-4 py-2 rounded-md mt-4 w-64">Change Profile Picture</a>
             </div>
-            <div class="rounded p-4 md:ml-32 overflow-ellipsis w-full">
+            <div class="rounded p-4 md:ml-32 sm:mt-0 overflow-ellipsis w-full">
                 <h1 class="font-semibold text-3xl text-white">
-                    {{ Auth::user()->name }}
+                    {{ Auth::user()->username }}
                 </h1>
-                <p class="text-white text-sm">{{ Auth::user()->email }}</p>
                 <div>
-                    <a href="#" class="bg-white text-gray-800 px-4 py-2 rounded-md mt-4 inline-block">Edit Profile
+                    <a href="{{ route('profile.edit', Auth::user()->username) }}" class="bg-white text-gray-800 px-4 py-2 rounded-md mt-4 inline-block">Edit Profile
                     </a>
                 </div>
                 <div class="mt-4">
-                    <h1 class="text-lg text-white font-medium">
+                    <h1 class="text-xl text-white font-medium">
                         {{ __('User Information') }}
                     </h1>
+                    <h1 class="font-bold text-lg text-white mt-3">
+                        {{ ucfirst(Auth::user()->name) }}
+                    </h1>
+                    <p class="text-white text-sm">{{ Auth::user()->email }}</p>
                     <div class="mt-6">
                         <p class="text-white text-md">
                             <span class="font-semibold">Member Since:</span>
@@ -43,7 +46,7 @@
         </div>
         <div class="mt-10">
             <h1 class="text-2xl font-bold text-white">Most Popular Repositories</h1>
-            <div class="mt-10 bg-white rounded p-4">
+            <div class="mt-10 bg-white rounded-xl p-4">
                 <ul class="space-y-4 mb-6">
                     <li>
                         <a href="#" class="block p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">Repository 1</a>
@@ -58,7 +61,7 @@
             </div>
 
             <h1 class="text-2xl font-bold text-white mt-10">Recent Issues</h1>
-            <div class="mt-10 bg-white rounded p-4">
+            <div class="mt-10 bg-white rounded-xl p-4">
                 <ul class="space-y-4 mb-6">
                     <li>
                         <a href="#" class="block p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">Issue 1</a>
@@ -73,7 +76,7 @@
             </div>
 
             <h1 class="text-2xl font-bold text-white mt-10">Recent Pull Requests</h1>
-            <div class="mt-10 bg-white rounded p-4">
+            <div class="mt-10 bg-white rounded-xl p-4">
                 <ul class="space-y-4 mb-6">
                     <li>
                         <a href="#" class="block p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">Pull Request 1</a>
