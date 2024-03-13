@@ -2,33 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\StoreAllProjectsInDatabase;
+use App\Repository\ProjectRepository;
+use App\Services\GithubService;
 
 class ProjectController extends Controller
 {
+    public function __construct(
+        protected ProjectRepository $projectRepository
+    ) {
+    }
+
     public function index()
     {
-        return view('projects.index');
+        $projects = $this->projectRepository->allProjects();
+
+        return view('projects.index', compact('projects'));
     }
 
     public function getRepositories()
     {
-        $user = Auth::user();
+        $apiToken = Auth::user()->github_token;
 
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'You need to be logged in');
-        }
+        StoreAllProjectsInDatabase::dispatch($apiToken, Auth::id());
 
-        $githubToken = $user->github_token;
-
-        if (!$githubToken) {
-            return redirect()->route('login')->with('error', 'You need to connect your GitHub account first');
-        }
-
-        StoreAllProjectsInDatabase::dispatch($githubToken, $user->id);
-
-        return redirect()->route('projects');
+        return redirect()->route('projects')->with('status', 'Job has been dispatched');
     }
 }

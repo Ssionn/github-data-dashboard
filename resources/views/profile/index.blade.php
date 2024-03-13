@@ -7,15 +7,18 @@
         <h1 class="text-3xl font-bold text-white mt-10">Profile</h1>
         <div class="mt-10 flex flex-col md:flex-row space-y-16 sm:space-y-0">
             <div class="flex flex-col w-64 h-64">
-                <img src="{{ Auth::user()->getImageUrl() }}" alt="Profile Image" class="object-contain w-full h-full bg-black rounded-xl">
-                <a href="{{ route('profile.edit', Auth::user()->username) }}" class="bg-white text-gray-800 px-4 py-2 rounded-md mt-4 w-64">Change Profile Picture</a>
+                <img src="{{ Auth::user()->getImageUrl() }}" alt="Profile Image"
+                    class="object-contain w-full h-full bg-black rounded-xl">
+                <a href="{{ route('profile.edit', Auth::user()->username) }}"
+                    class="bg-white text-gray-800 px-4 py-2 rounded-md mt-4 w-64">Change Profile Picture</a>
             </div>
             <div class="rounded p-4 md:ml-32 sm:mt-0 overflow-ellipsis w-full">
                 <h1 class="font-semibold text-3xl text-white">
                     {{ Auth::user()->username }}
                 </h1>
                 <div>
-                    <a href="{{ route('profile.edit', Auth::user()->username) }}" class="bg-white text-gray-800 px-4 py-2 rounded-md mt-4 inline-block">Edit Profile
+                    <a href="{{ route('profile.edit', Auth::user()->username) }}"
+                        class="bg-white text-gray-800 px-4 py-2 rounded-md mt-4 inline-block">Edit Profile
                     </a>
                 </div>
                 <div class="mt-4">
@@ -48,13 +51,13 @@
             <h1 class="text-2xl font-bold text-white">Most Popular Repositories</h1>
             <div class="mt-10 bg-white rounded-xl p-4">
                 <ul class="space-y-4 mb-6">
-                    <li>
-                        <a href="#" class="block p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">Repository 1</a>
-                    </li>
-
-                    <li>
-                        <a href="#" class="block p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">Repository 2</a>
-                    </li>
+                    @foreach ($projects as $project)
+                        <li>
+                            <a href="#" class="block p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                {{ $project->name }}
+                            </a>
+                        </li>
+                    @endforeach
                 </ul>
 
                 <a href="#" class="p-4 underline">View All Repositories</a>

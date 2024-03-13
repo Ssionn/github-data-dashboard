@@ -13,7 +13,7 @@ class OAuthController extends Controller
     public function redirect($github)
     {
         return Socialite::driver($github)
-            ->setScopes(['read:user', 'repo', 'user:email'])
+            ->setScopes(['read:user', 'repo', 'user:email', 'issues:read'])
             ->redirect();
     }
 

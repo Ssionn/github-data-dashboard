@@ -11,16 +11,14 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type',
-        'repo_id',
-        'repo_name',
-        'repo_url',
-        'before_sha',
-        'commit_sha',
-        'commit_author',
-        'commit_message',
-        'commit_url',
+        'forks_count',
+        'stargazers_count',
+        'watchers_count',
+        'open_issues_count',
+        'default_branch',
+        'visibility',
         'user_id',
+        'repo_id',
     ];
 
     public function user(): BelongsTo

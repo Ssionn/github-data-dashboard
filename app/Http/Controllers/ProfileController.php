@@ -4,12 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Repository\ProjectRepository;
 
 class ProfileController extends Controller
 {
+    public function __construct(
+        protected ProjectRepository $projectRepository
+    ) {
+    }
+
     public function index()
     {
-        return view('profile.index');
+        $projects = $this->projectRepository->limitedProjects();
+
+        return view('profile.index', compact('projects'));
     }
 
     public function edit($username)

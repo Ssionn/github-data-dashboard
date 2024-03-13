@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\User;
+use App\Models\Project;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -13,17 +15,14 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
-            $table->string('repo_id');
-            $table->string('repo_name');
-            $table->string('repo_url');
-            $table->string('before_sha');
-            $table->string('commit_sha');
-            $table->string('commit_author');
-            $table->string('commit_message');
-            $table->string('commit_url');
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('project_id')->constrained();
+            $table->string('forks_count');
+            $table->string('stargazers_count');
+            $table->string('watchers_count');
+            $table->string('open_issues_count');
+            $table->string('default_branch');
+            $table->string('visibility');
+            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(Project::class)->constrained();
             $table->timestamps();
         });
     }

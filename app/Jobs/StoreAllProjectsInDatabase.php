@@ -11,54 +11,41 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class StoreAllProjectsInDatabase implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public string $token;
-
-    public function __construct(string $githubToken)
-    {
-        $this->token = $githubToken;
+    public function __construct(
+        public string $apiToken,
+        public int $userId,
+    ) {
     }
 
     public function handle(): void
     {
-        $userId = Auth::id();
-        $githubToken = $this->token;
+        $projects = (new GithubService($this->apiToken))
+            ->getReposFromGithub();
 
-        $repoData = GithubService::getRepositoriesFromGithub($githubToken);
-        $eventData = GithubService::getEventsFromGithub($githubToken);
-
-        foreach ($repoData as $project) {
-            Project::create([
-                'name' => $project['name'],
-                'full_name' => $project['full_name'],
-                'description' => $project['description'],
-                'html_url' => $project['html_url'],
-                'git_url' => $project['git_url'],
-                'ssh_url' => $project['ssh_url'],
-                'clone_url' => $project['clone_url'],
-                'owner' => $project['owner']['login'],
-                'user_id' => $userId,
-            ]);
-        }
-
-        foreach ($eventData as $event) {
-            Event::create([
-                'type' => $event['type'],
-                'repo_id' => $event['repo']['id'],
-                'repo_name' => $event['repo']['name'],
-                'repo_url' => $event['repo']['url'],
-                'before_sha' => $event['before_sha'],
-                'commit_sha' => $event['commits']['sha'],
-                'commit_author' => $event['commits']['author']['name'],
-                'commit_message' => $event['commits']['message'],
-                'commit_url' => $event['commits']['url'],
-                'user_id' => $userId,
-            ]);
+        foreach ($projects as $project) {
+            Project::updateOrCreate(
+                [
+                    'name' => $project['name'],
+                    'full_name' => $project['full_name'] ?? null,
+                    'description' => $project['description'] ?? null,
+                    'html_url' => $project['html_url'] ?? null,
+                    'git_url' => $project['git_url'] ?? null,
+                    'ssh_url' => $project['ssh_url'] ?? null,
+                    'clone_url' => $project['clone_url'] ?? null,
+                    'owner' => $project['owner']['login'] ?? null,
+                    'repo_id' => $project['id'] ?? null,
+                    'user_id' => $this->userId ?? null,
+                    'pushed_at' => $project['pushed_at'] ?? null,
+                ]
+            );
         }
     }
 }

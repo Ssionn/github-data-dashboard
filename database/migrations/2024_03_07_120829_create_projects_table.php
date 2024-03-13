@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('ssh_url');
             $table->string('clone_url');
             $table->string('owner');
+            $table->string('repo_id');
             $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();
             $table->dateTime('pushed_at')->nullable();
