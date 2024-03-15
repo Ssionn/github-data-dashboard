@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('forks_count');
-            $table->string('stargazers_count');
-            $table->string('watchers_count');
-            $table->string('open_issues_count');
-            $table->string('default_branch');
-            $table->string('visibility');
-            $table->foreignIdFor(User::class)->constrained();
-            $table->foreignIdFor(Project::class)->constrained();
+            $table->string('forks_count')->nullable();
+            $table->string('stargazers_count')->nullable();
+            $table->string('watchers_count')->nullable();
+            $table->string('open_issues_count')->nullable();
+            $table->string('default_branch')->nullable();
+            $table->string('visibility')->nullable();
+            $table->foreignIdFor(Project::class);
+            $table->foreignIdFor(User::class);
             $table->timestamps();
         });
     }

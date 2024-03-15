@@ -85,4 +85,10 @@ class User extends Authenticatable
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
     }
+
+    public function dateFormatted(): string
+    {
+
+        return 'Joined on ' . $this->created_at->format('jS') . ' of ' . $this->created_at->format('F, Y');
+    }
 }

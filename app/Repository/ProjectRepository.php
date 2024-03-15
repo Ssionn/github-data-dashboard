@@ -2,25 +2,29 @@
 
 namespace App\Repository;
 
-use App\Services\GithubService;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectRepository
 {
-    public function allProjects()
+    public function allProjects(int $userId)
     {
-        return DB::table('projects')
-            ->where('user_id', Auth::id())
+        return Project::where('user_id', $userId)
+            ->with('events')
+            ->simplePaginate(10);
+    }
+
+    public function limitedProjects(int $userId)
+    {
+        return Project::where('user_id', $userId)
+            ->with('events')
+            ->limit(5)
             ->get();
     }
 
-    public function limitedProjects()
+    public function findProject(int $userId)
     {
-        return DB::table('projects')
-            ->where('user_id', Auth::id())
-            ->limit(3)
+        return Project::where('user_id', $userId)
             ->get();
     }
 }

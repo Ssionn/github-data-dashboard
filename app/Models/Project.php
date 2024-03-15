@@ -21,8 +21,17 @@ class Project extends Model
         'ssh_url',
         'clone_url',
         'owner',
-        'repo_id',
+        'project_id',
         'user_id',
+        'pushed_at',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $casts = [
+        'pushed_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -32,6 +41,11 @@ class Project extends Model
 
     public function events(): HasMany
     {
-        return $this->hasMany(Event::class, 'repo_id', 'repo_id');
+        return $this->hasMany(Event::class, 'project_id', 'project_id');
+    }
+
+    public function dateFormatted(): string
+    {
+        return $this->updated_at->format('d-m-Y');
     }
 }

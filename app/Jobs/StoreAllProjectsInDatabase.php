@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Event;
 use App\Models\Project;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -11,27 +10,21 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class StoreAllProjectsInDatabase implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(
-        public string $apiToken,
-        public int $userId,
-    ) {
-    }
-
-    public function handle(): void
-    {
-        $projects = (new GithubService($this->apiToken))
+    public function handle(
+        string $apiToken,
+        int $userId
+    ): void {
+        $projects = (new GithubService($apiToken))
             ->getReposFromGithub();
 
         foreach ($projects as $project) {
             Project::updateOrCreate(
+                ['project_id' => $project['id'] ?? null],
                 [
                     'name' => $project['name'],
                     'full_name' => $project['full_name'] ?? null,
@@ -41,9 +34,10 @@ class StoreAllProjectsInDatabase implements ShouldQueue
                     'ssh_url' => $project['ssh_url'] ?? null,
                     'clone_url' => $project['clone_url'] ?? null,
                     'owner' => $project['owner']['login'] ?? null,
-                    'repo_id' => $project['id'] ?? null,
-                    'user_id' => $this->userId ?? null,
+                    'user_id' => $userId ?? null,
                     'pushed_at' => $project['pushed_at'] ?? null,
+                    'created_at' => $project['created_at'] ?? null,
+                    'updated_at' => $project['updated_at'] ?? null,
                 ]
             );
         }

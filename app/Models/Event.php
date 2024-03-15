@@ -18,7 +18,7 @@ class Event extends Model
         'default_branch',
         'visibility',
         'user_id',
-        'repo_id',
+        'project_id',
     ];
 
     public function user(): BelongsTo
@@ -28,6 +28,6 @@ class Event extends Model
 
     public function project(): BelongsTo
     {
-        return $this->belongsTo(Project::class, 'repo_id', 'repo_id');
+        return $this->belongsTo(Project::class);
     }
 }

@@ -38,4 +38,31 @@ class GithubService
 
         return $reposArr;
     }
+
+    public function getRepoDetailsFromGithub(
+        string $owner,
+        string $repo
+    ) {
+        $repoDetailsArr = [];
+        $page = 1;
+        $per_page = 100;
+
+        do {
+            $response = Http::withHeaders([
+                "Accept" => "application/vnd.github.v3+json",
+                "Authorization" => "Bearer " . $this->apiToken,
+                "X-GitHub-Api-Version" => "2022-11-28",
+            ])->get('https://api.github.com/repos/' . $owner . '/' . $repo);
+
+            if ($response->status() === 401) {
+                dd($response->json());
+            }
+
+            $repoDetailsArr = array_merge($repoDetailsArr, $response->json());
+
+            $page++;
+        } while (count($response->json()) === $per_page);
+
+        return $repoDetailsArr;
+    }
 }

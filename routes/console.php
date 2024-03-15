@@ -1,8 +1,16 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use App\Jobs\StoreAllDetailsInDatabase;
+use App\Jobs\StoreAllProjectsInDatabase;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+Schedule::job(new StoreAllProjectsInDatabase())
+    ->everyMinute()
+    ->name('store-all-projects')
+    ->withoutOverlapping();
+
+Schedule::job(new StoreAllDetailsInDatabase())
+    ->everyMinute()
+    ->name('store-all-details')
+    ->withoutOverlapping();

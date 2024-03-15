@@ -1,6 +1,6 @@
 <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar"
     type="button"
-    class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-white rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+    class="inline-flex items-center p-2 mt-2 text-sm text-white rounded-lg ms-3 sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
     <span class="sr-only">Open sidebar</span>
     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
         <path clip-rule="evenodd" fill-rule="evenodd"
@@ -52,7 +52,7 @@
             </li>
         </ul>
         <div>
-            <ul class="space-y-2 font-medium absolute bottom-3 w-11/12 left-3">
+            <ul class="absolute w-11/12 space-y-2 font-medium bottom-3 left-3">
                 @if (Route::has('login'))
                     @auth
                         <li>
@@ -73,7 +73,7 @@
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button href="{{ route('logout') }}"
-                                    class="flex items-center text-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group w-full">
+                                    class="flex items-center w-full p-2 text-gray-900 rounded-lg text-start dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                     <svg class="w-5 h-5 pt-1 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                         viewBox="0 0 20 20" stroke-width="1.5">

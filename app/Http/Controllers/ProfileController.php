@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Repository\ProjectRepository;
 
 class ProfileController extends Controller
@@ -15,7 +16,7 @@ class ProfileController extends Controller
 
     public function index()
     {
-        $projects = $this->projectRepository->limitedProjects();
+        $projects = $this->projectRepository->limitedProjects(Auth::id());
 
         return view('profile.index', compact('projects'));
     }
