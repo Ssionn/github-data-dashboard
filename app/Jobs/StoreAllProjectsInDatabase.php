@@ -15,11 +15,15 @@ class StoreAllProjectsInDatabase implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function handle(
-        string $apiToken,
-        int $userId
-    ): void {
-        $projects = (new GithubService($apiToken))
+    public function __construct(
+        protected string $apiToken,
+        protected int $userId
+    ) {
+    }
+
+    public function handle(): void
+    {
+        $projects = (new GithubService($this->apiToken))
             ->getReposFromGithub();
 
         foreach ($projects as $project) {
@@ -34,7 +38,7 @@ class StoreAllProjectsInDatabase implements ShouldQueue
                     'ssh_url' => $project['ssh_url'] ?? null,
                     'clone_url' => $project['clone_url'] ?? null,
                     'owner' => $project['owner']['login'] ?? null,
-                    'user_id' => $userId ?? null,
+                    'user_id' => $this->userId ?? null,
                     'pushed_at' => $project['pushed_at'] ?? null,
                     'created_at' => $project['created_at'] ?? null,
                     'updated_at' => $project['updated_at'] ?? null,

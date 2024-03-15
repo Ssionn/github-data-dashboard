@@ -15,14 +15,18 @@ class StoreAllDetailsInDatabase implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function handle(
-        string $apiToken,
-        string $username,
-        string $repoName,
-        int $userId
-    ): void {
-        $repoDetails = (new GithubService($apiToken))
-            ->getRepoDetailsFromGithub($username, $repoName);
+    public function __construct(
+        protected string $apiToken,
+        protected string $username,
+        protected string $repoName,
+        protected int $userId
+    ) {
+    }
+
+    public function handle(): void
+    {
+        $repoDetails = (new GithubService($this->apiToken))
+            ->getRepoDetailsFromGithub($this->username, $this->repoName);
 
         Event::updateOrCreate(
             ['project_id' => $repoDetails['id'] ?? null],
@@ -33,7 +37,7 @@ class StoreAllDetailsInDatabase implements ShouldQueue
                 'open_issues_count' => $repoDetails['open_issues_count'] ?? '?',
                 'default_branch' => $repoDetails['default_branch'] ?? 'Unknown',
                 'visibility' => $repoDetails['visibility'] ?? 'Unknown',
-                'user_id' => $userId,
+                'user_id' => $this->userId,
             ]
         );
     }
